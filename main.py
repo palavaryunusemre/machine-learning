@@ -22,36 +22,60 @@ from sklearn import preprocessing
 
 path='_sahibinden_.xlsx'
 
-#---------------------------------AdaBoost ile Sınıflandırma---------------------------------------------------------------------
+class adaboost:
+    def __init__(self,index):
+        self.index=index
+        self.data1 = pd.read_excel(path, header=None, usecols=self.index)  # sütun isimleri hata veriyor column name ile devam
+        array = self.data1.values
 
-data1 = pd.read_excel(path, header=None, usecols="E,F,J,K,L") #sütun isimleri hata veriyor column name ile devam
-array = data1.values
+        # scikit-learn'in Standart Ölçekleyicisi (birçok scikit-learn algoritması ve ML algoritması gibi) SADECE sayısal verileri kabul eder.
+        # Bu nedenle, metin verilerinizden sayısal veriler yapmanız gerekir. Bunu, scikit-learn'in vektörleştiricilerinden birini - CountVectorizer, TfIdfVectorizer (önerilir) kullanarak yapabilirsiniz.
 
-#scikit-learn'in Standart Ölçekleyicisi (birçok scikit-learn algoritması ve ML algoritması gibi) SADECE sayısal verileri kabul eder.
-#Bu nedenle, metin verilerinizden sayısal veriler yapmanız gerekir. Bunu, scikit-learn'in vektörleştiricilerinden birini - CountVectorizer, TfIdfVectorizer (önerilir) kullanarak yapabilirsiniz.
+        vectorizer = CountVectorizer()
+        XcountVectorizer = vectorizer.fit_transform(array.ravel())
+        vectorizer.get_feature_names_out()
+        self.array_XcountVectorizer = XcountVectorizer.toarray()
 
-vectorizer = CountVectorizer()
-XcountVectorizer = vectorizer.fit_transform(array.ravel())
-vectorizer.get_feature_names_out()
-array_XcountVectorizer=XcountVectorizer .toarray()
+        X = self.array_XcountVectorizer[:, 0:1]
+        Y = self.array_XcountVectorizer[:, 1]
+        seed = 5
+        kfold = KFold(n_splits=5, random_state=seed, shuffle=True)
+        num_trees = 100
+        # max_features = 5
+        ADBclf = AdaBoostClassifier(n_estimators=100)
+        self.results = cross_val_score(ADBclf, X, Y, cv=kfold)
 
-X = array_XcountVectorizer[:,0:4]
-Y = array_XcountVectorizer[:,4]
-seed = 5
-kfold = KFold(n_splits = 5, random_state = seed, shuffle=True)
-num_trees = 100
-#max_features = 5
-ADBclf = AdaBoostClassifier(n_estimators = 100 )
-results = cross_val_score(ADBclf, X, Y, cv = kfold)
+    def show(self):
+        return (print("column {} ".format(self.index) +": "+ str(self.results.mean())))
 
-print(results.mean())
+    def adaBoostRegresyon(self,n_features): #n_features değerleri otomatik alınabilir
+        self.n_features=n_features
+        X, Y = make_regression(n_features=self.n_features, n_informative=2, random_state=0, shuffle=False)
+        ADBregr = RandomForestRegressor(random_state=0, n_estimators=100)
+        ADBregr.fit(X, Y)
+        df1 = pd.DataFrame(ADBregr.predict(self.array_XcountVectorizer))
+
+
+
+#---------------------------------AdaBoost ile Sınıflandırma SÜTUN ---------------------------------------------------------------------
+
+adaboost("E").show()
+adaboost("F").show()
+adaboost("J").show()
+adaboost("K").show()
+adaboost("L").show()
+
+
+
 
 #----------------------------------AdaBoost ile Regresyon----------------------------------------------------------------------------------------
-X, Y = make_regression(n_features = 18, n_informative = 2,random_state = 0, shuffle = False)
-ADBregr = RandomForestRegressor(random_state = 0,n_estimators = 100)
-ADBregr.fit(X, Y)
-df1=pd.DataFrame(ADBregr.predict(array_XcountVectorizer))
-print(df1)
+
+adaboost("E").adaBoostRegresyon(4)
+adaboost("F").adaBoostRegresyon(3)
+adaboost("J").adaBoostRegresyon(4)
+adaboost("K").adaBoostRegresyon(3)
+adaboost("L").adaBoostRegresyon(4)
+
 
 #--------------------------ÖLÇEKLENDİRMELER---------------------------------------------------------------------
 data=pd.read_excel(path)
