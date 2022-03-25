@@ -54,7 +54,7 @@ class adaboost:
         ADBregr = RandomForestRegressor(random_state=0, n_estimators=100)
         ADBregr.fit(X, Y)
         df1 = pd.DataFrame(ADBregr.predict(self.array_XcountVectorizer))
-
+        return df1
 
 
 #---------------------------------AdaBoost ile Sınıflandırma SÜTUN ---------------------------------------------------------------------
@@ -69,12 +69,21 @@ adaboost("L").show()
 
 
 #----------------------------------AdaBoost ile Regresyon----------------------------------------------------------------------------------------
+carFuel=pd.DataFrame()
+carFuel['yakit']=pd.DataFrame(adaboost("E").adaBoostRegresyon(4))
 
-adaboost("E").adaBoostRegresyon(4)
-adaboost("F").adaBoostRegresyon(3)
-adaboost("J").adaBoostRegresyon(4)
-adaboost("K").adaBoostRegresyon(3)
-adaboost("L").adaBoostRegresyon(4)
+
+carGeer=pd.DataFrame()
+carGeer['vites']=pd.DataFrame(adaboost("F").adaBoostRegresyon(3))
+
+carCekis=pd.DataFrame()
+carCekis['cekiş']=pd.DataFrame(adaboost("J").adaBoostRegresyon(4))
+
+carSahip=pd.DataFrame()
+carSahip['kimden']=pd.DataFrame(adaboost("K").adaBoostRegresyon(3))
+
+carDurum=pd.DataFrame()
+carDurum['durumu']=pd.DataFrame(adaboost("L").adaBoostRegresyon(4))
 
 
 #--------------------------ÖLÇEKLENDİRMELER---------------------------------------------------------------------
@@ -84,14 +93,14 @@ df=pd.DataFrame(data)
 carId=df['marka']
 carSeri=df['seri']
 carYears=df[['yil']]
-carFuel=df['yakit']
-carGeer=df['vites']
+#carFuel=df['yakit']
+#carGeer=df['vites']
 carKm=df[['km']]
 carHp=df['motor gucu']
 carMv=df['motor hacmi']
-carCekis=df['cekis']
-carSahip=df['kimden']
-carDurum=df['durumu']
+#carCekis=df['cekis']
+#carSahip=df['kimden']
+#carDurum=df['durumu']
 carModel=df['model']
 carPrice=df['fiyat']
 
