@@ -12,6 +12,7 @@
 
 
 import pandas as pd
+import numpy as np
 from sklearn.model_selection import KFold
 from sklearn.model_selection import cross_val_score
 from sklearn.ensemble import AdaBoostClassifier
@@ -27,7 +28,7 @@ class adaboost:
         self.index=index
         self.data1 = pd.read_excel(path, header=None, usecols=self.index)  # sütun isimleri hata veriyor column name ile devam
         array = self.data1.values
-
+        array=np.delete(array,0) #okunan veriden başlığı çıkardım
         # scikit-learn'in Standart Ölçekleyicisi (birçok scikit-learn algoritması ve ML algoritması gibi) SADECE sayısal verileri kabul eder.
         # Bu nedenle, metin verilerinizden sayısal veriler yapmanız gerekir. Bunu, scikit-learn'in vektörleştiricilerinden birini - CountVectorizer, TfIdfVectorizer (önerilir) kullanarak yapabilirsiniz.
 
@@ -40,10 +41,10 @@ class adaboost:
         Y = self.array_XcountVectorizer[:, 1]
         seed = 5
         kfold = KFold(n_splits=5, random_state=seed, shuffle=True)
-        num_trees = 100
-        # max_features = 5
         ADBclf = AdaBoostClassifier(n_estimators=100)
         self.results = cross_val_score(ADBclf, X, Y, cv=kfold)
+
+
 
     def show(self):
         return (print("column {} ".format(self.index) +": "+ str(self.results.mean())))
@@ -70,21 +71,20 @@ adaboost("L").show()
 
 #----------------------------------AdaBoost ile Regresyon----------------------------------------------------------------------------------------
 carFuel=pd.DataFrame()
-carFuel['yakit']=pd.DataFrame(adaboost("E").adaBoostRegresyon(4))
+carFuel['yakit']=pd.DataFrame(adaboost("E").adaBoostRegresyon(3))
 
 
 carGeer=pd.DataFrame()
-carGeer['vites']=pd.DataFrame(adaboost("F").adaBoostRegresyon(3))
+carGeer['vites']=pd.DataFrame(adaboost("F").adaBoostRegresyon(2))
 
 carCekis=pd.DataFrame()
 carCekis['cekiş']=pd.DataFrame(adaboost("J").adaBoostRegresyon(4))
 
 carSahip=pd.DataFrame()
-carSahip['kimden']=pd.DataFrame(adaboost("K").adaBoostRegresyon(3))
+carSahip['kimden']=pd.DataFrame(adaboost("K").adaBoostRegresyon(2))
 
 carDurum=pd.DataFrame()
-carDurum['durumu']=pd.DataFrame(adaboost("L").adaBoostRegresyon(4))
-
+carDurum['durumu']=pd.DataFrame(adaboost("L").adaBoostRegresyon(3))
 
 #--------------------------ÖLÇEKLENDİRMELER---------------------------------------------------------------------
 data=pd.read_excel(path)
